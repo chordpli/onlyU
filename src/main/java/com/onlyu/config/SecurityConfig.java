@@ -67,7 +67,7 @@ public class SecurityConfig {
 
 	@Bean
 	public UserDetailsService userDetailsService() {
-		return email -> memberRepository.findByMemberEmail(email)
+		return email -> memberRepository.findByEmail(email)
 			.orElseThrow(() -> new UsernameNotFoundException("존재하지 않는 회원입니다."));
 	}
 
