@@ -4,6 +4,7 @@ import com.onlyu.domain.dto.member.JoinRequest;
 import com.onlyu.domain.dto.member.JoinResponse;
 import com.onlyu.domain.dto.member.LoginRequest;
 import com.onlyu.domain.dto.member.LoginResponse;
+import com.onlyu.domain.dto.member.SearchResponse;
 import com.onlyu.exception.ErrorCode;
 import com.onlyu.exception.OnlyUAppException;
 import com.onlyu.service.MemberService;
@@ -14,6 +15,10 @@ import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
@@ -117,5 +122,20 @@ public class MemberController {
     } finally {
       return "redirect:/";
     }
+  }
+
+  @GetMapping("/search")
+  public String findMember(@RequestParam("keyword") String keyword,
+      HttpServletRequest servletRequest,
+      Model model,
+      HttpServletResponse servletResponse) {
+
+    Pageable pageable = PageRequest.of(0, 10, Sort.by("nickname").descending());
+    Page<SearchResponse> members = memberService.findMember(keyword, pageable);
+
+    model.addAttribute("members", members);
+
+    return "pages/member/find";
+
   }
 }
