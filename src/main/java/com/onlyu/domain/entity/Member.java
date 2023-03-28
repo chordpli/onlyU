@@ -3,6 +3,8 @@ package com.onlyu.domain.entity;
 import java.util.Collection;
 import java.util.Collections;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -33,6 +35,7 @@ public class Member implements UserDetails {
   private String email;
   private String password;
   private String nickname;
+  @Enumerated(EnumType.STRING)
   private MemberStatus memberStatus;
 
   @Override
