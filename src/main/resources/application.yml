@@ -11,3 +11,6 @@ spring:
     database: mysql
     hibernate:
       ddl-auto: update
+
+jwt:
+  secret: this_is_temp_secret_key
