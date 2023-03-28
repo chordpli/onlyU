@@ -34,8 +34,9 @@ public class MemberController {
 
 
   @GetMapping("/login")
-  public String loginForm(HttpServletRequest request, Model model, HttpServletResponse response) {
-    HttpSession session = request.getSession(false);
+  public String loginForm(HttpServletRequest servletRequest, Model model,
+      HttpServletResponse response) {
+    HttpSession session = servletRequest.getSession(false);
     if (session != null) {
       LoginResponse loginResponse = (LoginResponse) session
           .getAttribute("loginUser");
@@ -43,9 +44,9 @@ public class MemberController {
         return "redirect:/";
       }
       new SecurityContextLogoutHandler()
-          .logout(request, response, SecurityContextHolder.getContext().getAuthentication());
+          .logout(servletRequest, response, SecurityContextHolder.getContext().getAuthentication());
     }
-    String referrer = request.getHeader("Referer");
+    String referrer = servletRequest.getHeader("Referer");
 
     model.addAttribute("request", new LoginRequest());
     model.addAttribute("referrer", referrer);
@@ -55,7 +56,7 @@ public class MemberController {
   @PostMapping("/authenticate")
   public String authenticate(@RequestBody final @Valid LoginRequest request,
       BindingResult bindingResult,
-      HttpServletRequest httpRequest,
+      HttpServletRequest servletRequest,
       Model model,
       @RequestParam(required = false) String redirect) {
 
@@ -66,7 +67,7 @@ public class MemberController {
     try {
       LoginResponse response = memberService.authentication(request);
 
-      HttpSession session = httpRequest.getSession();   //세션이 있으면 있는 세션 반환, 없으면 신규 세션
+      HttpSession session = servletRequest.getSession();   //세션이 있으면 있는 세션 반환, 없으면 신규 세션
       session.setAttribute("loginUser", response);
     } catch (OnlyUAppException e) {
       throw new OnlyUAppException(ErrorCode.INCONSISTENT_INFORMATION,
@@ -80,13 +81,34 @@ public class MemberController {
     }
   }
 
+  @GetMapping("/join")
+  public String joinForm(HttpServletRequest servletRequest, Model model,
+      HttpServletResponse response) {
+
+    HttpSession session = servletRequest.getSession(false);
+
+    if (session != null) {
+      LoginResponse loginResponse = (LoginResponse) session
+          .getAttribute("loginUser");
+      if (loginResponse != null) {
+        return "redirect:/";
+      }
+      new SecurityContextLogoutHandler()
+          .logout(servletRequest, response, SecurityContextHolder.getContext().getAuthentication());
+    }
+    model.addAttribute("request", new JoinRequest());
+    return "pages/member/join";
+  }
+
   @PostMapping("/join")
-  public Response<JoinResponse> join(@RequestBody final @Valid JoinRequest request) {
+  public String join(@RequestBody final @Valid JoinRequest request) {
     try {
-      return Response.success(memberService.join(request));
+      memberService.join(request);
     } catch (DataIntegrityViolationException | OnlyUAppException e) {
       throw new OnlyUAppException(ErrorCode.DUPLICATED_MEMBER_INFO,
           ErrorCode.DUPLICATED_MEMBER_INFO.getMessage());
+    } finally {
+      return "redirect:/";
     }
   }
 }
