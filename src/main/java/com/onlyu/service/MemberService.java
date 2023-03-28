@@ -13,7 +13,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -39,8 +38,9 @@ public class MemberService {
           ErrorCode.DUPLICATED_MEMBER_NICKNAME.getMessage());
     }
 
+    log.info("service request ={}", request.getNickname());
     Member member = memberRepository.save(JoinRequest.toEntity(request, passwordEncoder));
-
+    log.info("service member ={}", member.getNickname());
     return JoinResponse.of(member);
   }
 
@@ -48,6 +48,7 @@ public class MemberService {
     final Member member = memberRepository.findByEmail(request.getEmail())
         .orElseThrow(() -> new OnlyUAppException(ErrorCode.MEMBER_NOT_FOUND, "존재하지 않는 회원입니다."));
 
+    log.info("login member = {}", member.getNickname());
     if (passwordEncoder.matches(request.getPassword(), member.getPassword())) {
       authenticationManager.authenticate(
           new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
@@ -55,6 +56,7 @@ public class MemberService {
 
       log.info("인증 성공: {}", request.getEmail());
       String jwt = jwtUtils.generateToken(member);
+      log.info("jwt ={}", jwt);
       return LoginResponse.of(member, jwt);
     }
 

@@ -1,9 +1,8 @@
 package com.onlyu.controller;
 
-import com.onlyu.domain.Response;
-import com.onlyu.domain.dto.member.LoginRequest;
 import com.onlyu.domain.dto.member.JoinRequest;
 import com.onlyu.domain.dto.member.JoinResponse;
+import com.onlyu.domain.dto.member.LoginRequest;
 import com.onlyu.domain.dto.member.LoginResponse;
 import com.onlyu.exception.ErrorCode;
 import com.onlyu.exception.OnlyUAppException;
@@ -13,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
@@ -21,13 +21,13 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequestMapping("/authentication")
 @RequiredArgsConstructor
+@Slf4j
 public class MemberController {
 
   private final MemberService memberService;
@@ -54,7 +54,7 @@ public class MemberController {
   }
 
   @PostMapping("/authenticate")
-  public String authenticate(@RequestBody final @Valid LoginRequest request,
+  public String authenticate(final @Valid LoginRequest request,
       BindingResult bindingResult,
       HttpServletRequest servletRequest,
       Model model,
@@ -66,13 +66,14 @@ public class MemberController {
 
     try {
       LoginResponse response = memberService.authentication(request);
-
+      log.info("login user ={}", response.getNickname());
       HttpSession session = servletRequest.getSession();   //세션이 있으면 있는 세션 반환, 없으면 신규 세션
       session.setAttribute("loginUser", response);
     } catch (OnlyUAppException e) {
       throw new OnlyUAppException(ErrorCode.INCONSISTENT_INFORMATION,
           ErrorCode.INCONSISTENT_INFORMATION.getMessage());
     }
+    log.info("login redirect = {}", redirect);
 
     if (redirect == null) {
       return "redirect:/";
@@ -101,9 +102,15 @@ public class MemberController {
   }
 
   @PostMapping("/join")
-  public String join(@RequestBody final @Valid JoinRequest request) {
+  public String join(final @Valid JoinRequest request) {
+
+    log.info("email = {}, nickname = {}", request.getEmail(), request.getNickname());
+
     try {
-      memberService.join(request);
+      JoinResponse member = memberService.join(request);
+      log.info("JoinResponse no ={}, nickname = {}", member.getMemberNo(), member.getNickname());
+
+
     } catch (DataIntegrityViolationException | OnlyUAppException e) {
       throw new OnlyUAppException(ErrorCode.DUPLICATED_MEMBER_INFO,
           ErrorCode.DUPLICATED_MEMBER_INFO.getMessage());
