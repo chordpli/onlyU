@@ -5,12 +5,15 @@ import com.onlyu.domain.dto.member.JoinRequest;
 import com.onlyu.domain.dto.member.JoinResponse;
 import com.onlyu.domain.dto.member.LoginRequest;
 import com.onlyu.domain.dto.member.LoginResponse;
+import com.onlyu.domain.dto.member.SearchResponse;
 import com.onlyu.domain.entity.Member;
 import com.onlyu.exception.ErrorCode;
 import com.onlyu.exception.OnlyUAppException;
 import com.onlyu.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -62,5 +65,10 @@ public class MemberService {
 
     throw new OnlyUAppException(ErrorCode.INCONSISTENT_INFORMATION,
         ErrorCode.INCONSISTENT_INFORMATION.getMessage());
+  }
+
+  public Page<SearchResponse> findMember(String keyword, Pageable pageable) {
+    return memberRepository.findAllByEmailIsContainingIgnoreCase(keyword, pageable)
+        .map(SearchResponse::of);
   }
 }
