@@ -26,7 +26,9 @@ public enum ErrorCode {
   NOT_ENOUGH_POINTS(ResultCode.INVALID_ARGUMENT, "포인트가 부족합니다."),
   DUPLICATED_MEMBER_EMAIL(ResultCode.CONFLICT, "이미 사용중인 이메일입니다."),
   DUPLICATED_MEMBER_NICKNAME(ResultCode.CONFLICT, "이미 사용중인 닉네임입니다." ),
-  DUPLICATED_MEMBER_INFO(ResultCode.CONFLICT, "이미 존재하는 사용자입니다." );
+  DUPLICATED_MEMBER_INFO(ResultCode.CONFLICT, "이미 존재하는 사용자입니다." ),
+  ALREADY_REFUSE_REQUEST(ResultCode.CONFLICT, "이미 거절된 요청입니다."),
+  ALREADY_ACCEPT_REQUEST(ResultCode.CONFLICT, "이미 승인된 요청입니다.");
 
   private ResultCode resultCode;
   private String message;
