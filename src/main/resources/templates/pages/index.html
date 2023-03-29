@@ -31,20 +31,33 @@
 
         </div>
         <div class="search">
-          <form action="/search" method="get">
-            <input type="text" name="email" placeholder="회원 이름을 입력해주세요">
+          <form action="/authentication/search" method="get">
+            <input type="text" name="keyword" placeholder="회원 이름을 입력해주세요">
             <button type="submit">찾기</button>
           </form>
         </div>
       </div>
 
-      <div class="friend-list">
-        <div class="friend">
-          <div class="icon">
+      <div class="friend-requests">
+        <div>친구 요청을 확인하세요.</div>
+        <div class="friend-request">
+          <div class="requester-nickname">
+
           </div>
-          <div class="name">
+          <div class="requester-email">
+
+          </div>
+        </div>
+      </div>
+
+      <div class="friend-list">
+        <div class="friend" th:each="friend:${friends}">
+          <div class="name" th:text="${friend.getNickname()}">
           </div>
           <div class="chat">
+            <a th:href="/chat/${friend.getMemberNo()}">
+              <button type="button">채팅</button>
+            </a>
           </div>
         </div>
       </div>
