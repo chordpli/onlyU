@@ -22,6 +22,8 @@ public class FriendController {
   private final FriendService friendService;
   private final FriendRequestService friendRequestService;
 
+
+  /* Request */
   @PostMapping("/request")
   public String addFriend(@RequestParam(name = "memberNo") Long memberNo,
       @SessionAttribute(name = "loginUser", required = true) LoginResponse loginMember,
@@ -39,8 +41,22 @@ public class FriendController {
       HttpServletRequest servletRequest,
       HttpServletResponse servletResponse) {
 
-    friendRequestService.acceptFriendRequest(memberNo, loginMember.getMemberNo());
+    friendRequestService.decideFriendRequest(memberNo, loginMember.getMemberNo(), true);
 
     return "redirect:/";
   }
+
+  // todo: 요청 거절
+  @PostMapping("/request/refuse")
+  public String refuseRequest(@RequestParam(name = "memberNo") Long memberNo,
+      @SessionAttribute(name = "loginUser", required = true) LoginResponse loginMember,
+      HttpServletRequest servletRequest,
+      HttpServletResponse servletResponse) {
+
+    friendRequestService.decideFriendRequest(memberNo, loginMember.getMemberNo(), false);
+
+    return "redirect:/";
+  }
+
+  // todo" 요청 리스트
 }
