@@ -29,7 +29,7 @@
           <span th:text="${list.getNickname()}"></span>
         </div>
         <div class="add-button">
-          <form action="/friend/add" method="post">
+          <form action="/friend/request" method="post">
             <input type="hidden" name="memberNo" th:value="${list.getMemberNo()}"
                    placeholder="추가하기">
             <button type="submit">
