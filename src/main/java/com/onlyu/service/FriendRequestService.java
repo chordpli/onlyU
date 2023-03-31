@@ -50,7 +50,9 @@ public class FriendRequestService {
 		}
 
 		FriendRequest existingRequest = friendRequestRepository.findByRequesterAndReceiver(requester,
-			receiver);
+			receiver).orElseThrow(()->{
+				throw new OnlyUAppException(ErrorCode.INCONSISTENT_INFORMATION, ErrorCode.INCONSISTENT_INFORMATION.getMessage());
+		});
 		if (existingRequest != null) {
 			throw new IllegalStateException("You have already sent a friend request to this user.");
 		}
@@ -66,23 +68,15 @@ public class FriendRequestService {
 	}
 
 	@Transactional
-	public void decideFriendRequest(Long receiverNo, Long requesterNo, boolean decide) {
+	public void decideFriendRequest(Long requestNo, boolean decide) {
 
-		Member requester = memberRepository.findById(requesterNo).orElseThrow(
-			() -> {
-				throw new OnlyUAppException(ErrorCode.MEMBER_NOT_FOUND,
-					ErrorCode.MEMBER_NOT_FOUND.getMessage());
-			}
-		);
-
-		Member receiver = memberRepository.findById(receiverNo).orElseThrow(
-			() -> {
-				throw new OnlyUAppException(ErrorCode.MEMBER_NOT_FOUND,
-					ErrorCode.MEMBER_NOT_FOUND.getMessage());
-			}
-		);
-
-		FriendRequest existingRequest = friendRequestRepository.findByRequesterAndReceiver(requester, receiver);
+		FriendRequest existingRequest = friendRequestRepository.findById(requestNo)
+			.orElseThrow(
+				() -> {
+					throw new OnlyUAppException(ErrorCode.INCONSISTENT_INFORMATION,
+						ErrorCode.INCONSISTENT_INFORMATION.getMessage());
+				}
+			);
 
 		if (existingRequest.getStatus().equals(FriendRequestStatus.REFUSE)) {
 			throw new OnlyUAppException(ErrorCode.ALREADY_REFUSE_REQUEST,
@@ -97,7 +91,7 @@ public class FriendRequestService {
 		if (decide) {
 			existingRequest.accept();
 			friendRequestRepository.save(existingRequest);
-			friendService.addRelation(requester, receiver);
+			friendService.addRelation(existingRequest.getRequester(), existingRequest.getReceiver());
 		} else {
 			existingRequest.refuse();
 			friendRequestRepository.save(existingRequest);
@@ -111,7 +105,7 @@ public class FriendRequestService {
 					ErrorCode.MEMBER_NOT_FOUND.getMessage());
 			}
 		);
-		List<FriendRequest> requestList = friendRequestRepository.findByReceiver(receiver);
+		List<FriendRequest> requestList = friendRequestRepository.findByReceiverAndStatus(receiver, FriendRequestStatus.PENDING);
 
 		return requestList.stream()
 			.map(FriendRequestResponse::of)
