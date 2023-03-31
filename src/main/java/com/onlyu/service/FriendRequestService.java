@@ -1,11 +1,14 @@
 package com.onlyu.service;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
 import org.springframework.stereotype.Service;
 
+import com.onlyu.domain.dto.friends.FriendRequestResponse;
 import com.onlyu.domain.entity.FriendRequest;
 import com.onlyu.domain.entity.FriendRequest.FriendRequestStatus;
 import com.onlyu.domain.entity.Member;
@@ -79,7 +82,7 @@ public class FriendRequestService {
 			}
 		);
 
-		FriendRequest existingRequest = friendRequestRepository.findByReceiver(receiver);
+		FriendRequest existingRequest = friendRequestRepository.findByRequesterAndReceiver(requester, receiver);
 
 		if (existingRequest.getStatus().equals(FriendRequestStatus.REFUSE)) {
 			throw new OnlyUAppException(ErrorCode.ALREADY_REFUSE_REQUEST,
@@ -101,4 +104,17 @@ public class FriendRequestService {
 		}
 	}
 
+	public List<FriendRequestResponse> getRequestList(Long receiverNo) {
+		Member receiver = memberRepository.findById(receiverNo).orElseThrow(
+			() -> {
+				throw new OnlyUAppException(ErrorCode.MEMBER_NOT_FOUND,
+					ErrorCode.MEMBER_NOT_FOUND.getMessage());
+			}
+		);
+		List<FriendRequest> requestList = friendRequestRepository.findByReceiver(receiver);
+
+		return requestList.stream()
+			.map(FriendRequestResponse::of)
+			.collect(Collectors.toList());
+	}
 }
