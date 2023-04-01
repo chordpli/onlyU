@@ -28,7 +28,8 @@ public enum ErrorCode {
   DUPLICATED_MEMBER_NICKNAME(ResultCode.CONFLICT, "이미 사용중인 닉네임입니다." ),
   DUPLICATED_MEMBER_INFO(ResultCode.CONFLICT, "이미 존재하는 사용자입니다." ),
   ALREADY_REFUSE_REQUEST(ResultCode.CONFLICT, "이미 거절된 요청입니다."),
-  ALREADY_ACCEPT_REQUEST(ResultCode.CONFLICT, "이미 승인된 요청입니다.");
+  ALREADY_ACCEPT_REQUEST(ResultCode.CONFLICT, "이미 승인된 요청입니다."),
+  NOT_FOUND_INFORMATION(ResultCode.NOT_FOUND, "해당 정보를 찾을 수 없습니다." );
 
   private ResultCode resultCode;
   private String message;
