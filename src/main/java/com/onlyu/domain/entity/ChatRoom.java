@@ -35,11 +35,6 @@ public class ChatRoom {
 
   private LocalDateTime createdAt;
 
-  public void inviteMembers(Member member1, Member member2) {
-    this.member1 = member1;
-    this.member2 = member2;
-  }
-
   public static ChatRoom of(Member member1, Member member2) {
     return ChatRoom.builder()
         .member1(member1)
