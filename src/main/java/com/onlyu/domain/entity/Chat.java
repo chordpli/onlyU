@@ -33,4 +33,8 @@ public class Chat {
 
 	private String message;
 	private LocalDateTime createdAt;
+
+	public void sendMessage(String message) {
+		this.message = message;
+	}
 }
