@@ -49,14 +49,11 @@ public class FriendRequestService {
 			throw new IllegalArgumentException("You cannot send a friend request to yourself.");
 		}
 
-		FriendRequest existingRequest = friendRequestRepository.findByRequesterAndReceiver(requester,
-			receiver).orElseThrow(() -> {
-			throw new OnlyUAppException(ErrorCode.INCONSISTENT_INFORMATION,
-				ErrorCode.INCONSISTENT_INFORMATION.getMessage());
-		});
-		if (existingRequest != null) {
-			throw new IllegalStateException("You have already sent a friend request to this user.");
-		}
+		friendRequestRepository.findByRequesterAndReceiver(requester, receiver)
+			.ifPresent(request -> {
+				throw new OnlyUAppException(ErrorCode.INCONSISTENT_INFORMATION,
+					ErrorCode.INCONSISTENT_INFORMATION.getMessage());
+			});
 
 		FriendRequest friendRequest = FriendRequest.builder()
 			.requester(requester)
