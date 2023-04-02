@@ -2,6 +2,7 @@ package com.onlyu.service;
 
 import org.springframework.stereotype.Service;
 
+import com.onlyu.domain.dto.chat.ChatUserResponse;
 import com.onlyu.domain.entity.ChatRoom;
 import com.onlyu.domain.entity.Member;
 import com.onlyu.exception.ErrorCode;
@@ -57,4 +58,12 @@ public class ChatRoomService {
 		});
 	}
 
+	public ChatUserResponse getUserList(Long roomNo) {
+		ChatRoom chatRoom = chatRoomRepository.findById(roomNo)
+			.orElseThrow(()->{
+				throw new OnlyUAppException(ErrorCode.NOT_FOUND_INFORMATION, ErrorCode.NOT_FOUND_INFORMATION.getMessage());
+			});
+
+		return ChatUserResponse.fromEntity(chatRoom);
+	}
 }

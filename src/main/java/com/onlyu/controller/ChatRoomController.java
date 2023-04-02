@@ -5,11 +5,14 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttribute;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.onlyu.domain.dto.chat.ChatUserResponse;
 import com.onlyu.domain.dto.member.LoginResponse;
 import com.onlyu.domain.entity.ChatRoom;
+import com.onlyu.service.ChatRoomService;
 import com.onlyu.service.ChatService;
 
 import lombok.RequiredArgsConstructor;
@@ -21,6 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 public class ChatRoomController {
 
 	private final ChatService chatService;
+	private final ChatRoomService chatRoomService;
 
 	// 채팅방 생성
 	// 채팅방 생성 후 다시 / 로 return
@@ -29,7 +33,7 @@ public class ChatRoomController {
 		@RequestParam(name = "memberNo") Long memberNo,
 		RedirectAttributes rttr) {
 
-		ChatRoom room = chatService.createChatRoom(loginMember.getMemberNo(), memberNo);
+		ChatRoom room = chatRoomService.createChatRoom(loginMember.getMemberNo(), memberNo);
 
 		log.info("CREATE Chat Room {}", room);
 
@@ -46,7 +50,15 @@ public class ChatRoomController {
 		Model model) {
 
 		log.info("friendMemberNo = {}", friendMemberNo);
-		model.addAttribute("room", chatService.findRoomById(loginMember.getMemberNo(), friendMemberNo));
+		model.addAttribute("room", chatRoomService.findRoomById(loginMember.getMemberNo(), friendMemberNo));
 		return "pages/chat/chatroom";
 	}
+
+	// 채팅에 참여한 유저 리스트 반환
+	@GetMapping("/chat/userlist")
+	@ResponseBody
+	public ChatUserResponse userList(Long roomNo) {
+		return chatRoomService.getUserList(roomNo);
+	}
+
 }
