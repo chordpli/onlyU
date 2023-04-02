@@ -1,7 +1,12 @@
 package com.onlyu.service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import org.springframework.stereotype.Service;
 
+import com.onlyu.domain.dto.chat.ChatRoomResponse;
 import com.onlyu.domain.dto.chat.ChatUserResponse;
 import com.onlyu.domain.entity.ChatRoom;
 import com.onlyu.domain.entity.Member;
@@ -38,32 +43,31 @@ public class ChatRoomService {
 		return chatRoomRepository.save(chatRoom);
 	}
 
-	public ChatRoom findRoomById(Long myMemberNo, Long friendMemberNo) {
-		Member member1 = memberRepository.findById(myMemberNo).orElseThrow(
-			() -> {
-				throw new OnlyUAppException(ErrorCode.MEMBER_NOT_FOUND,
-					ErrorCode.MEMBER_NOT_FOUND.getMessage());
-			}
-		);
-
-		Member member2 = memberRepository.findById(friendMemberNo).orElseThrow(
-			() -> {
-				throw new OnlyUAppException(ErrorCode.MEMBER_NOT_FOUND,
-					ErrorCode.MEMBER_NOT_FOUND.getMessage());
-			}
-		);
-
-		return chatRoomRepository.findByMember1AndMember2(member1, member2).orElseThrow(() -> {
+	public ChatRoom findRoomById(Long chatRoomNo) {
+		return chatRoomRepository.findById(chatRoomNo).orElseThrow(() -> {
 			throw new OnlyUAppException(ErrorCode.NOT_FOUND_INFORMATION, ErrorCode.NOT_FOUND_INFORMATION.getMessage());
 		});
 	}
 
 	public ChatUserResponse getUserList(Long roomNo) {
 		ChatRoom chatRoom = chatRoomRepository.findById(roomNo)
-			.orElseThrow(()->{
-				throw new OnlyUAppException(ErrorCode.NOT_FOUND_INFORMATION, ErrorCode.NOT_FOUND_INFORMATION.getMessage());
+			.orElseThrow(() -> {
+				throw new OnlyUAppException(ErrorCode.NOT_FOUND_INFORMATION,
+					ErrorCode.NOT_FOUND_INFORMATION.getMessage());
 			});
 
 		return ChatUserResponse.fromEntity(chatRoom);
+	}
+
+	public List<ChatRoomResponse> findMyChatRoomByMemberNo(Long memberNo) {
+		return Stream.concat(chatRoomRepository.findAllByMember1_MemberNo(memberNo).stream(),
+				chatRoomRepository.findAllByMember2_MemberNo(memberNo).stream())
+			.filter(chatRoom -> chatRoom.getMember1().getMemberNo().equals(memberNo) ||
+				chatRoom.getMember2().getMemberNo().equals(memberNo))
+			.map(chatRoom -> {
+				return ChatRoomResponse.of(chatRoom, memberNo);
+			})
+			.distinct()
+			.collect(Collectors.toList());
 	}
 }
