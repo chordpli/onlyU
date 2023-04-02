@@ -50,8 +50,9 @@ public class FriendRequestService {
 		}
 
 		FriendRequest existingRequest = friendRequestRepository.findByRequesterAndReceiver(requester,
-			receiver).orElseThrow(()->{
-				throw new OnlyUAppException(ErrorCode.INCONSISTENT_INFORMATION, ErrorCode.INCONSISTENT_INFORMATION.getMessage());
+			receiver).orElseThrow(() -> {
+			throw new OnlyUAppException(ErrorCode.INCONSISTENT_INFORMATION,
+				ErrorCode.INCONSISTENT_INFORMATION.getMessage());
 		});
 		if (existingRequest != null) {
 			throw new IllegalStateException("You have already sent a friend request to this user.");
@@ -90,12 +91,11 @@ public class FriendRequestService {
 
 		if (decide) {
 			existingRequest.accept();
-			friendRequestRepository.save(existingRequest);
 			friendService.addRelation(existingRequest.getRequester(), existingRequest.getReceiver());
 		} else {
 			existingRequest.refuse();
-			friendRequestRepository.save(existingRequest);
 		}
+		friendRequestRepository.save(existingRequest);
 	}
 
 	public List<FriendRequestResponse> getRequestList(Long receiverNo) {
@@ -105,7 +105,8 @@ public class FriendRequestService {
 					ErrorCode.MEMBER_NOT_FOUND.getMessage());
 			}
 		);
-		List<FriendRequest> requestList = friendRequestRepository.findByReceiverAndStatus(receiver, FriendRequestStatus.PENDING);
+		List<FriendRequest> requestList = friendRequestRepository.findByReceiverAndStatus(receiver,
+			FriendRequestStatus.PENDING);
 
 		return requestList.stream()
 			.map(FriendRequestResponse::of)
