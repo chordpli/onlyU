@@ -42,7 +42,8 @@ public class Chat {
 	@CreatedDate
 	private LocalDateTime createdAt;
 
-	public void sendMessage(String message) {
+	public void sendMessage(String message, ChatRoom chatRoom) {
 		this.message = message;
+		this.chatRoom = chatRoom;
 	}
 }
