@@ -54,6 +54,7 @@ public class ChatRoomController {
 
 		log.info("friendMemberNo = {}", roomNo);
 		model.addAttribute("room", chatRoomService.findRoomById(roomNo));
+		model.addAttribute("myInfo", loginMember);
 		return "pages/chat/chatroom";
 	}
 
