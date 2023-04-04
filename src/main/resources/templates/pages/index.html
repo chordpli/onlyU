@@ -91,7 +91,7 @@
                 <div class="friend" th:each="friend:${friends}">
                     <div class="name" th:text="${friend.getNickname()}">
                     </div>
-                    <div class="chat" th:if="${friend.isCreatedChat()}">
+                    <div class="chat" th:if="${!friend.isCreatedChat()}">
                         <a href="#" class="create-room-btn" th:data-member-no="${friend.getMemberNo()}">
                             <button type="button">채팅 만들기</button>
                         </a>
