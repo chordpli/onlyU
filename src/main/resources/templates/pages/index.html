@@ -32,6 +32,7 @@
 
                 </div>
                 <div class="search">
+                    <h2>친구 검색</h2>
                     <form action="/authentication/search" method="get">
                         <input type="text" name="keyword" placeholder="회원 이름을 입력해주세요">
                         <button type="submit">찾기</button>
@@ -66,11 +67,25 @@
             </div>
 
             <div class="friend-list">
+                <h2>친구 목록</h2>
                 <div class="friend" th:each="friend:${friends}">
                     <div class="name" th:text="${friend.getNickname()}">
                     </div>
+                    <div class="chat" th:if="${friend.isCreatedChat()}">
+                        <a href="#" class="create-room-btn" th:data-member-no="${friend.getMemberNo()}">
+                            <button type="button">채팅 만들기</button>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="chat-list">
+                <h2>채팅방</h2>
+                <div class="chat-form" th:each="chatRoom:${chatRooms}">
+                    <div class="name" th:text="${chatRoom.getChatRoomMemberNickname()}">
+                    </div>
                     <div class="chat">
-                        <a th:href="@{/chat/{memberNo} (memberNo = ${friend.getMemberNo()})}">
+                        <a th:href="@{/chat/{roomNo} (roomNo = ${chatRoom.getChatRoomNo()})}">
                             <button type="button">채팅</button>
                         </a>
                     </div>
@@ -97,6 +112,14 @@
                 location.reload();
             });
         });
+
+        $('.create-room-btn').click(function () {
+            const memberNo = $(this).data('member-no');
+            $.post('/chat/createRoom', { memberNo: memberNo }, function (data) {
+                window.location.href = '/chat?chatRoomNo=' + data.roomNo;
+            });
+        });
+
     });
 </script>
 </html>
