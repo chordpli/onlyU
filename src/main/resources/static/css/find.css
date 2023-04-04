@@ -1,0 +1,40 @@
+.container{
+    display: flex;
+}
+
+.member-list{
+    width: 500px;
+    display: flex;
+    flex-direction: column;
+}
+
+.result{
+    width: 500px;
+    display: flex;
+}
+
+span{
+    margin-right: 10px;
+    font-size: 18px;
+}
+
+#nickname-box{
+    width: 150px;
+}
+.member{
+    margin-bottom: 10px;
+    display: flex;
+    flex-direction: row;
+}
+
+.image{
+    display: flex;
+}
+
+.nickname{
+    display: flex;
+}
+
+.add-button{
+    display: flex;
+}

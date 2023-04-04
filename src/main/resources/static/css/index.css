@@ -1,0 +1,124 @@
+.container {
+    display: flex;
+}
+
+.non-authenticate {
+    display: flex;
+}
+
+.index {
+    display: flex;
+    flex-direction: column;
+}
+
+.authenticate {
+    display: flex;
+    flex-direction: column;
+}
+
+.header {
+    display: flex;
+}
+
+.logo {
+    display: flex;
+}
+
+.search {
+    margin: 20px 0;
+
+    display: flex;
+    flex-direction: column;
+}
+
+.search form input, button{
+    padding: 5px;
+}
+
+.friend-requests {
+    margin-bottom: 20px;
+    font-size: 18px;
+    display: flex;
+    flex-direction: column;
+}
+
+.text-margin{
+    margin-bottom: 10px;
+}
+
+.friend-request {
+    display: flex;
+}
+
+.request-box{
+    display: flex;
+    flex-direction: row;
+}
+
+.text{
+    margin-right: 10px;
+}
+
+.text-border{
+    padding: 5px;
+    margin-right: 10px;
+    display: flex;
+    border: 1px solid black;
+}
+
+.decide button{
+    margin-right: 10px;
+}
+.requester-nickname {
+    display: flex;
+}
+
+.requester-email {
+    display: flex;
+}
+
+.decide {
+    display: flex;
+}
+
+.accept-request {
+    display: flex;
+}
+
+.refuse-request {
+    display: flex;
+}
+
+.friend-list {
+    display: flex;
+    flex-direction: column;
+}
+
+.friend {
+    display: flex;
+}
+
+.name {
+    display: flex;
+}
+
+.chat {
+    display: flex;
+    margin-bottom: 20px;
+    margin-left: 20px;
+}
+
+.create-room-btn {
+    margin-left: 20px;
+    display: flex;
+}
+
+.chat-list {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+}
+
+.chat-form {
+    display: flex;
+}
