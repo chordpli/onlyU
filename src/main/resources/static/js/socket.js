@@ -1,6 +1,5 @@
 'use strict';
 
-// document.write("<script src='jquery-3.6.1.js'></script>")
 document.write("<script\n" +
     "  src=\"https://code.jquery.com/jquery-3.6.1.min.js\"\n" +
     "  integrity=\"sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=\"\n" +
@@ -43,48 +42,17 @@ function onConnected() {
 
     $.ajax({
         type: 'POST',
-        url: '/chat/message/' + roomNo,
+        url: `/chat/message/${roomNo}`,
         success: function (data) {
-            console.log(data)
-            for (var i = 0; i < data.length; i++) {
-                var chat = data[i];
-                var messageElement = document.createElement('li');
-
-                messageElement.classList.add('chat-message');
-
-                var avatarElement = document.createElement('i');
-                var avatarText = document.createTextNode(chat.sender[0]);
-                avatarElement.appendChild(avatarText);
-                avatarElement.style['background-color'] = getAvatarColor(chat.sender);
-
-                messageElement.appendChild(avatarElement);
-
-                var usernameElement = document.createElement('span');
-                var usernameText = document.createTextNode(chat.sender);
-                usernameElement.appendChild(usernameText);
-                messageElement.appendChild(usernameElement);
-
-                var contentElement = document.createElement('p');
-                var messageText = document.createTextNode(chat.message);
-                contentElement.appendChild(messageText);
-
-                messageElement.appendChild(contentElement);
-
-                var timeElement = document.createElement('p');
-                timeElement.classList.add('chat-time');
-                var timeText = document.createTextNode(new Date(chat.createdAt).toLocaleString());
-                timeElement.appendChild(timeText);
-                messageElement.appendChild(timeElement);
-
-                messageArea.appendChild(messageElement);
-                messageArea.scrollTop = messageArea.scrollHeight;
+            for (let i = 0; i < data.length; i++) {
+                const chat = data[i];
+                appendChatMessage(chat);
             }
         },
         error: function (err) {
             console.error(err);
         }
     });
-
 }
 
 
@@ -115,43 +83,38 @@ function sendMessage(event) {
 function onMessageReceived(payload) {
     //console.log("payload 들어오냐? :"+payload);
     var chat = JSON.parse(payload.body);
+    appendChatMessage(chat);
+}
 
-    var messageElement = document.createElement('li');
-
-
+function appendChatMessage(chat) {
+    const messageElement = document.createElement('li');
     messageElement.classList.add('chat-message');
 
-    var avatarElement = document.createElement('i');
-    var avatarText = document.createTextNode(chat.sender[0]);
+    const avatarElement = document.createElement('i');
+    const avatarText = document.createTextNode(chat.sender[0]);
     avatarElement.appendChild(avatarText);
     avatarElement.style['background-color'] = getAvatarColor(chat.sender);
-
     messageElement.appendChild(avatarElement);
 
-    var usernameElement = document.createElement('span');
-    var usernameText = document.createTextNode(chat.sender);
+    const usernameElement = document.createElement('span');
+    const usernameText = document.createTextNode(chat.sender);
     usernameElement.appendChild(usernameText);
     messageElement.appendChild(usernameElement);
 
-    var contentElement = document.createElement('p');
-    var messageText = document.createTextNode(chat.message);
+    const contentElement = document.createElement('p');
+    const messageText = document.createTextNode(chat.message);
     contentElement.appendChild(messageText);
-
     messageElement.appendChild(contentElement);
 
-    var timeElement = document.createElement('p');
+    const timeElement = document.createElement('p');
     timeElement.classList.add('chat-time');
-    var timeText = document.createTextNode(new Date(chat.createdAt).toLocaleTimeString());
+    const timeText = document.createTextNode(`${new Date(chat.createdAt).toLocaleDateString()} ${new Date(chat.createdAt).toLocaleTimeString()}`);
     timeElement.appendChild(timeText);
     messageElement.appendChild(timeElement);
 
     messageArea.appendChild(messageElement);
     messageArea.scrollTop = messageArea.scrollHeight;
-
-    messageArea.appendChild(messageElement);
-    messageArea.scrollTop = messageArea.scrollHeight;
 }
-
 
 function getAvatarColor(messageSender) {
     var hash = 0;
