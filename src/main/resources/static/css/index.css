@@ -18,6 +18,11 @@
 
 .header {
     display: flex;
+    flex-direction: column;
+}
+
+.logout{
+    display: flex;
 }
 
 .logo {

@@ -58,6 +58,13 @@ public class MemberController {
     return "pages/member/login";
   }
 
+  @PostMapping("/logout")
+  public String logoutPage(HttpServletRequest request, HttpServletResponse response) {
+    new SecurityContextLogoutHandler()
+        .logout(request, response, SecurityContextHolder.getContext().getAuthentication());
+    return "redirect:/";
+  }
+
   @PostMapping("/authenticate")
   public String authenticate(final @Valid LoginRequest request,
       BindingResult bindingResult,
