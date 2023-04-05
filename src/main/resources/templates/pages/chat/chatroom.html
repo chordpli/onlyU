@@ -34,6 +34,11 @@
       cursor: pointer;
       font-size: 20px;
     }
+
+    a {
+      text-decoration: none !important;
+      color: white !important;
+    }
   </style>
 </head>
 <body>
@@ -50,6 +55,11 @@
     </div>
   </div>
 
+  <div class="btn-group dropend">
+    <button class="btn btn-secondary none-deco">
+      <a href="../">뒤로가기</a>
+    </button>
+  </div>
   <div class="chat-container">
     <div class="chat-header">
       <h2 th:text="${room.getMember2().getNickname() + ', ' + room.getMember1().getNickname()}"></h2>
