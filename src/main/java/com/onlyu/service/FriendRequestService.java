@@ -4,9 +4,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.transaction.Transactional;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.onlyu.domain.dto.friends.FriendRequestResponse;
 import com.onlyu.domain.entity.FriendRequest;
@@ -94,7 +94,7 @@ public class FriendRequestService {
 		}
 		friendRequestRepository.save(existingRequest);
 	}
-
+	@Transactional
 	public List<FriendRequestResponse> getRequestList(Long receiverNo) {
 		Member receiver = memberRepository.findById(receiverNo).orElseThrow(
 			() -> {

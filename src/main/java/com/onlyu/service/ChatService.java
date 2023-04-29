@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.onlyu.domain.entity.Chat;
 import com.onlyu.domain.entity.ChatRoom;
@@ -27,12 +28,14 @@ public class ChatService {
 		return UUID.randomUUID().toString();
 	}
 
+	@Transactional
 	public void saveChat(Chat chat) {
 		chatRepository.save(chat);
 	}
 
+	@Transactional
 	public List<Chat> getChatInfo(Long roomNo) {
-		ChatRoom chatRoom = chatRoomRepository.findById(roomNo).orElseThrow(()->{
+		ChatRoom chatRoom = chatRoomRepository.findById(roomNo).orElseThrow(() -> {
 			throw new OnlyUAppException(ErrorCode.NOT_FOUND_INFORMATION, ErrorCode.NOT_FOUND_INFORMATION.getMessage());
 		});
 		return chatRepository.findAllByChatRoom(chatRoom);

@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.onlyu.domain.dto.chat.ChatRoomResponse;
 import com.onlyu.domain.dto.chat.ChatUserResponse;
@@ -24,6 +25,7 @@ public class ChatRoomService {
 	private final ChatRoomRepository chatRoomRepository;
 	private final MemberRepository memberRepository;
 
+	@Transactional
 	public ChatRoom createChatRoom(Long myMemberNo, Long friendMemberNo) {
 		Member member1 = memberRepository.findById(myMemberNo).orElseThrow(
 			() -> {
@@ -43,12 +45,14 @@ public class ChatRoomService {
 		return chatRoomRepository.save(chatRoom);
 	}
 
+	@Transactional
 	public ChatRoom findRoomById(Long chatRoomNo) {
 		return chatRoomRepository.findById(chatRoomNo).orElseThrow(() -> {
 			throw new OnlyUAppException(ErrorCode.NOT_FOUND_INFORMATION, ErrorCode.NOT_FOUND_INFORMATION.getMessage());
 		});
 	}
 
+	@Transactional
 	public ChatUserResponse getUserList(Long roomNo) {
 		ChatRoom chatRoom = chatRoomRepository.findById(roomNo)
 			.orElseThrow(() -> {
@@ -59,6 +63,7 @@ public class ChatRoomService {
 		return ChatUserResponse.fromEntity(chatRoom);
 	}
 
+	@Transactional
 	public List<ChatRoomResponse> findMyChatRoomByMemberNo(Long memberNo) {
 		return Stream.concat(chatRoomRepository.findAllByMember1_MemberNo(memberNo).stream(),
 				chatRoomRepository.findAllByMember2_MemberNo(memberNo).stream())
