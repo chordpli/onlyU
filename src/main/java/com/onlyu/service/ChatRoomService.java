@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.onlyu.domain.dto.chat.ChatRoomResponse;
@@ -25,7 +26,7 @@ public class ChatRoomService {
 	private final ChatRoomRepository chatRoomRepository;
 	private final MemberRepository memberRepository;
 
-	@Transactional
+	@Transactional(isolation = Isolation.REPEATABLE_READ)
 	public ChatRoom createChatRoom(Long myMemberNo, Long friendMemberNo) {
 		Member member1 = memberRepository.findById(myMemberNo).orElseThrow(
 			() -> {
