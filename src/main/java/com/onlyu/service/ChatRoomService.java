@@ -1,5 +1,7 @@
 package com.onlyu.service;
 
+import static com.onlyu.exception.ErrorCode.*;
+
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -41,7 +43,9 @@ public class ChatRoomService {
 					ErrorCode.MEMBER_NOT_FOUND.getMessage());
 			}
 		);
-
+		chatRoomRepository.findByMember1AndMember2(member1, member2).ifPresent(chatRoom -> {
+			throw new OnlyUAppException(ALREADY_ACCEPT_REQUEST, ALREADY_ACCEPT_REQUEST.getMessage());
+		});
 		ChatRoom chatRoom = ChatRoom.of(member1, member2);
 		return chatRoomRepository.save(chatRoom);
 	}
