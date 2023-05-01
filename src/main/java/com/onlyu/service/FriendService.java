@@ -1,7 +1,12 @@
 package com.onlyu.service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.onlyu.domain.dto.friends.FriendResponse;
-import com.onlyu.domain.entity.ChatRoom;
 import com.onlyu.domain.entity.Friends;
 import com.onlyu.domain.entity.Member;
 import com.onlyu.exception.ErrorCode;
@@ -11,17 +16,12 @@ import com.onlyu.repository.FriendRequestRepository;
 import com.onlyu.repository.FriendsRepository;
 import com.onlyu.repository.MemberRepository;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
 import lombok.RequiredArgsConstructor;
-
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class FriendService {
 
 	private final MemberRepository memberRepository;
@@ -64,7 +64,6 @@ public class FriendService {
 
 	@Transactional
 	public boolean hasChatRoom(Member member1, Member member2) {
-		Optional<ChatRoom> createdChat = chatRoomRepository.findByMember1AndMember2(member1, member2);
-		return createdChat.isPresent();
+		return chatRoomRepository.existsByMembersRegardlessOfOrder(member1, member2);
 	}
 }
