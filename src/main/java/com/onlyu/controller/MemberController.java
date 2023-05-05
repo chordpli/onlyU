@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.SessionAttribute;
 
 @Controller
 @RequestMapping("/authentication")
@@ -135,10 +136,11 @@ public class MemberController {
   public String findMember(@RequestParam("keyword") String keyword,
       HttpServletRequest servletRequest,
       Model model,
-      HttpServletResponse servletResponse) {
+      HttpServletResponse servletResponse,
+      @SessionAttribute(name = "loginUser", required = true) LoginResponse loginMember) {
 
     Pageable pageable = PageRequest.of(0, 10, Sort.by("nickname").descending());
-    Page<SearchResponse> members = memberService.findMember(keyword, pageable);
+    Page<SearchResponse> members = memberService.findMember(loginMember.getMemberNo(), keyword, pageable);
 
     model.addAttribute("members", members);
 

@@ -28,11 +28,13 @@ public class ChatController {
 	private final SimpMessageSendingOperations template;
 	private final ChatService chatService;
 	private final ChatRoomService chatRoomService;
+
 	// 해당 유저
 	@MessageMapping("/chat/sendMessage")
 	@Transactional
 	public void sendMessage(@Payload Chat chat) {
-		log.info("chat.getSender = {}, message = {}, roomNo = {}", chat.getSender(), chat.getMessage(), chat.getChatRoom().getRoomNo());
+		log.info("chat.getSender = {}, message = {}, roomNo = {}", chat.getSender(), chat.getMessage(),
+			chat.getChatRoom().getRoomNo());
 		ChatRoom chatRoom = chatRoomService.findRoomById(chat.getChatRoom().getRoomNo());
 		chat.sendMessage(chat.getMessage(), chatRoom);
 		chatService.saveChat(chat);
@@ -41,7 +43,7 @@ public class ChatController {
 
 	@PostMapping("/chat/message/{roomNo}")
 	@ResponseBody
-	public List<Chat> getMessage(@PathVariable Long roomNo){
+	public List<Chat> getMessage(@PathVariable Long roomNo) {
 		return chatService.getChatInfo(roomNo);
 	}
 }

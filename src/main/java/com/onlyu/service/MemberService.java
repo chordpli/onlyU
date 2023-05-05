@@ -9,6 +9,7 @@ import com.onlyu.domain.dto.member.SearchResponse;
 import com.onlyu.domain.entity.Member;
 import com.onlyu.exception.ErrorCode;
 import com.onlyu.exception.OnlyUAppException;
+import com.onlyu.repository.FriendsRepository;
 import com.onlyu.repository.MemberRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -28,6 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class MemberService {
 
 	private final MemberRepository memberRepository;
+	private final FriendsRepository friendsRepository;
 
 	private final PasswordEncoder passwordEncoder;
 	private final JwtUtils jwtUtils;
@@ -73,8 +75,21 @@ public class MemberService {
 	}
 
 	@Transactional
-	public Page<SearchResponse> findMember(String keyword, Pageable pageable) {
-		return memberRepository.findAllByEmailIsContainingIgnoreCase(keyword, pageable)
-			.map(SearchResponse::of);
+	public Page<SearchResponse> findMember(Long memberNo, String keyword, Pageable pageable) {
+		Member myInfo = memberRepository.findById(memberNo).orElseThrow(
+			() -> {
+				throw new OnlyUAppException(ErrorCode.MEMBER_NOT_FOUND,
+					ErrorCode.MEMBER_NOT_FOUND.getMessage());
+			}
+		);
+
+		Page<SearchResponse> responses = memberRepository.findAllByEmailIsContainingIgnoreCase(keyword, pageable)
+			.map(response -> SearchResponse.of(response, isFriend(myInfo, response)));
+
+		return responses;
+	}
+
+	public boolean isFriend(Member myInfo, Member response) {
+		return friendsRepository.existsByFriendRegardlessOfOrder(myInfo, response);
 	}
 }
