@@ -32,7 +32,7 @@
           <span>닉네임: </span>
           <span id="nickname-box" th:text="${list.getNickname()}">dd</span>
         </div>
-        <div class="add-button">
+        <div class="add-button" th:if="${!list.isFriend()}">
           <form action="/friend/request" method="post">
             <input type="hidden" name="memberNo" th:value="${list.getMemberNo()}"
                    placeholder="추가하기">
