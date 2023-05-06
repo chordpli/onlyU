@@ -22,6 +22,9 @@
 
   <div class="member-list">
     <h2>검색 결과</h2>
+    <button class="btn btn-secondary none-deco">
+      <a href="../">뒤로가기</a>
+    </button>
     <div class="result" th:each="list : ${members}"
          th:if="${list.getMemberNo() != session.loginUser.getMemberNo() && members != null}">
       <div class="member">
